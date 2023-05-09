@@ -1,0 +1,114 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:GoogleTrendViewer.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+        mc:Ignorable="d"
+        x:Class="GoogleTrendViewer.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+		Width="800"
+		Height="600"
+        Icon="/Assets/trend-icon.png"
+		WindowStartupLocation="CenterScreen"
+		Background="Transparent"
+		TransparencyLevelHint="Transparent"
+		TransparencyBackgroundFallback="Transparent"
+		ExtendClientAreaToDecorationsHint="True"
+        Title="GoogleTrendViewer">
+
+	<Design.DataContext>
+		<!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+		<vm:MainWindowViewModel/>
+	</Design.DataContext>
+
+	<Window.Styles>
+		<Style Selector="Border.container">
+			<Setter Property="Background" Value="#191919"/>
+		</Style>
+		<Style Selector="TextBlock.app-title">
+			<Setter Property="FontSize" Value="20"></Setter>
+			<Setter Property="FontWeight" Value="Bold"></Setter>
+			<Setter Property="Margin" Value="10,10,0,0"/>
+		</Style>
+		<Style Selector="TextBlock.trend-title">
+			<Setter Property="FontSize" Value="16"></Setter>
+			<Setter Property="FontWeight" Value="Bold"></Setter>
+		</Style>
+		<Style Selector="TextBlock.trend-traffic">
+			<Setter Property="FontSize" Value="12"></Setter>
+			<Setter Property="FontWeight" Value="Bold"></Setter>
+			<Setter Property="Foreground" Value="Green"></Setter>
+		</Style>
+		<Style Selector="TextBlock.trend-desc">
+			<Setter Property="FontSize" Value="10"></Setter>
+			<Setter Property="Foreground" Value="#f5f5f5"></Setter>
+		</Style>
+
+		<Style Selector="TextBlock.news-title">
+			<Setter Property="FontSize" Value="12"></Setter>
+			<Setter Property="Foreground" Value="Orange"></Setter>
+		</Style>
+		<Style Selector="TextBlock.news-desc">
+			<Setter Property="FontSize" Value="10"></Setter>
+			<Setter Property="Foreground" Value="#f5f5f5"></Setter>
+		</Style>
+	</Window.Styles>
+
+	<Border Classes="container">
+		<Grid RowDefinitions="100,*">
+			<Border Grid.Row="0" Padding="10">
+				<StackPanel Spacing="10" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+					<Image Source="/Assets/trend-icon.png" Width="50" Height="50"></Image>
+					<TextBlock Classes="app-title">Google Trend Today</TextBlock>
+				</StackPanel>
+			</Border>
+			<Border Grid.Row="1" Padding="10">
+				<ScrollViewer>
+					<ItemsControl Items="{Binding Items}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Border Background="#323130" Padding="10" CornerRadius="8" Margin="0,0,0,10">
+									<Grid ColumnDefinitions="30,60,*,70, Auto">
+										<Border Grid.Column="0">
+											<TextBlock Text="{Binding Number}"/>
+										</Border>
+										<Border Grid.Column="1">
+											<Image asyncImageLoader:ImageLoader.Source="{Binding Image}"/>
+										</Border>
+										<Border Grid.Column="2" Padding="20,10,0,0">
+											<StackPanel>
+												<TextBlock Classes="trend-title" Text="{Binding Title}"/>
+												<ItemsControl Items="{Binding NewsItems}">
+													<ItemsControl.ItemTemplate>
+														<DataTemplate>
+															<Border Classes="news-container" Margin="0,0,0,10">
+																<StackPanel>
+																	<Button Command="{Binding OpenUrlCmd}" CommandParameter="{Binding Url}">
+																		<TextBlock Classes="news-title" Text="{Binding Title}" />
+																	</Button>
+																	<TextBlock Classes="news-desc" Text="{Binding Description}"/>
+																</StackPanel>
+															</Border>
+														</DataTemplate>
+													</ItemsControl.ItemTemplate>
+												</ItemsControl>
+											</StackPanel>
+										</Border>
+										<Border Grid.Column="3">
+											<TextBlock Classes="trend-traffic" Text="{Binding Traffic}"/>
+										</Border>
+										<Border Grid.Column="4">
+											<TextBlock TextWrapping="Wrap" Classes="trend-desc" Text="{Binding Description}"/>
+										</Border>
+									</Grid>
+								</Border>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</ScrollViewer>
+			</Border>
+		</Grid>
+	</Border>
+</Window>
